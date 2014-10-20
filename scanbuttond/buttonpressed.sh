@@ -63,7 +63,7 @@ case $1 in
     scanGray
     convert $TMP_TIFF_FILE -quality 85 -quiet -format JPEG $TMP_JPEG_FILE
     #tiff2ps -z -w 8.5 -h 11 $TMPFILE | lpr
-    todrive.py $TMP_JPEG_FILE
+    sendto gdrive --attachment=$TMP_JPEG_FILE "Some Folder" $TMP_JPEG_FILE
     clean_up
   ;;
   2)
@@ -71,23 +71,19 @@ case $1 in
     chk_lock; mk_lock
     scanColor
     convert $TMP_TIFF_FILE -quality 85 -quiet -format JPEG $TMP_JPEG_FILE
-    todrive.py $TMP_JPEG_FILE
+    sendto gdrive --attachment=$TMP_JPEG_FILE "Some Folder" $TMP_JPEG_FILE
     clean_up
   ;;
   3)
-    # button 3 (mail): 
-    # attachment with Evolution
-    #chk_lock; mk_lock; scan; convert $TMPFILE -quality 85 -quiet $DESTINATION
-    #evolution --display=:0.0 "mailto:?attach=$DESTINATION"; clean_up
-    scanGray
-    mv $TMPFILE $COPIESFOLDER/`date +Statement-%Y%m%d-%H%M%S.tiff`
+    # button 3 (evernote): scan picture and send it to Evernote
+    chk_lock; mk_lock
+    scanColor
+    convert $TMP_TIFF_FILE -quality 85 -quiet -format JPEG $TMP_JPEG_FILE
+    sendto evernote --attachment=$TMP_JPEG_FILE "Taxes" $TMP_JPEG_FILE
     clean_up
   ;;
   4)
   # button 4 (web): 
-    scanGray
-    mv $TMPFILE $COPIESFOLDER/`date +Misc-%Y%m%d-%H%M%S.tiff`
-    clean_up
   ;;
 esac
 

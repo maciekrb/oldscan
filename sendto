@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+"""
+sendto allows to upload files to different services
+
+Usage:
+  sendto evernote [--attachment=FILE] <notebook> <title>
+  sendto gdrive --attachment=FILE <folder> <title>
+"""
+
+from docopt import docopt
+import os
+import sys
+from auth_helper import get_credentials
+
+if __name__ == '__main__':
+
+  args = docopt(__doc__, version="0.1")
+
+  srvc = 'evernote' if args['evernote'] == True else 'google_drive'
+  credentials = get_credentials(srvc, sandbox=False)
+  if credentials is None:
+    sys.exit(1)
+
+  attachment = None
+  if '--attachment' in args:
+    attachment = (
+        os.path.basename(args['--attachment']),
+        open(args['--attachment'], 'rb').read()
+    )
+
+  if args['evernote']:
+    from to_evernote import main as evernote_send
+    evernote_send(credentials.access_token, args['<notebook>'], args['<title>'], attachment, True)
+  elif args['gdrive']:
+    from to_gdrive import main as gdrive_send
+    gdrive_send(credentials, args['<folder>'], args['<title>'], args['--attachment'])
+  else:
+    print "Invalid service"
