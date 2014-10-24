@@ -102,6 +102,7 @@ class Note:
 
 def main(token, notebook_name, title, attachment=None, sandbox=True):
 
+  print "Sandbox: {}".format(sandbox)
   client = EvernoteClient(token=token, sandbox=sandbox)
   notebook = Notebook.searchByName(client, notebook_name)
   if notebook is None:

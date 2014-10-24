@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
   if args['evernote']:
     from to_evernote import main as evernote_send
-    evernote_send(credentials.access_token, args['<notebook>'], args['<title>'], attachment, True)
+    evernote_send(credentials.access_token, args['<notebook>'], args['<title>'], attachment, sandbox=False)
   elif args['gdrive']:
     from to_gdrive import main as gdrive_send
     gdrive_send(credentials, args['<folder>'], args['<title>'], args['--attachment'])
