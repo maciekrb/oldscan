@@ -1,5 +1,6 @@
-
+from __future__ import print_function
 import hashlib
+import sys
 from evernote.api.client import EvernoteClient
 import evernote.edam.type.ttypes as Types
 import evernote.edam.error.ttypes as Errors
@@ -94,10 +95,10 @@ class Note:
       return note_store.createNote(note)
 
     except Errors.EDAMUserException as e:
-      print "EDAMUserException: {}".format(e)
+      print("EDAMUserException: {}".format(e), file=sys.stderr)
 
     except Errors.EDAMNotFoundException as e:
-      print "EDAMNotFoundException: {}".format(e)
+      print("EDAMNotFoundException: {}".format(e), file=sys.stderr)
 
 
 def main(token, notebook_name, title, attachment=None, sandbox=True):
@@ -105,9 +106,9 @@ def main(token, notebook_name, title, attachment=None, sandbox=True):
   client = EvernoteClient(token=token, sandbox=sandbox)
   notebook = Notebook.searchByName(client, notebook_name)
   if notebook is None:
-    print "Notebook \"{}\" does not exist".format(notebook_name)
+    print("Notebook \"{}\" does not exist".format(notebook_name), file=sys.stdout)
     return
 
   note = Note(title, attachment=attachment)
   new_note = note.save(client, notebook, title)
-  print u"Note was succesfully created: {}".format(new_note.guid)
+  print(u"Note was succesfully created: {}".format(new_note.guid), file=sys.stdout)

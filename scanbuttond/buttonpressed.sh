@@ -15,6 +15,7 @@ DAEMON=scanbuttond
 # securely create temporary file to avoid race condition attacks
 TMP_TIFF_FILE=`mktemp /tmp/$DAEMON.XXXXXX.tiff`
 TMP_JPEG_FILE=`mktemp /tmp/$DAEMON.XXXXXX.jpg`
+TMP_PDF_FILE=`mktemp /tmp/$DAEMON.XXXXXX.pdf`
 
 # lock file
 LOCKFILE="/tmp/$DAEMON.lock"
@@ -25,6 +26,7 @@ DEVICE="$2"
 # remove temporary file on abort
 trap 'rm -f $TMP_TIFF_FILE' 0 1 15
 trap 'rm -f $TMP_JPEG_FILE' 0 1 15
+trap 'rm -f $TMP_PDF_FILE' 0 1 15
 
 # function: create lock file with scanbuttond's PID
 mk_lock() {
@@ -42,7 +44,7 @@ chk_lock() {
 # function: remove temporary and lock files
 clean_up () {
   test -e $LOCKFILE && rm -f $LOCKFILE
-  rm -f $TMP_TIFF_FILE $TMP_JPEG_FILE
+  rm -f $TMP_TIFF_FILE $TMP_JPEG_FILE $TMP_PDF_FILE
 }
 
 # function: the actual scan command (modify to match your setup)
@@ -78,8 +80,9 @@ case $1 in
     # button 3 (evernote): scan picture and send it to Evernote
     chk_lock; mk_lock
     scanColor
-    convert $TMP_TIFF_FILE -quality 85 -quiet -format JPEG $TMP_JPEG_FILE
-    sendto evernote --attachment=$TMP_JPEG_FILE "Taxes" $TMP_JPEG_FILE
+    #convert $TMP_TIFF_FILE -quality 85 -quiet -format PDF $TMP_PDF_FILE
+    convert $TMP_TIFF_FILE -quality 30 -compress jpeg2000 -quiet $TMP_PDF_FILE
+    sendto evernote --attachment=$TMP_PDF_FILE --  "-INBOX" "I need a name"
     clean_up
   ;;
   4)
