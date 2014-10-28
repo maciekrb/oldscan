@@ -87,7 +87,7 @@ def get_credentials(service, sandbox=True):
 
   client_id, client_secret, scope, storage = srv_param
   if srv == 'evernote':
-    return evernote_auth(client_id, client_secret, storage, True)
+    return evernote_auth(client_id, client_secret, storage, sandbox)
   else:
     return google_auth(client_id, client_secret, scope, storage)
 
